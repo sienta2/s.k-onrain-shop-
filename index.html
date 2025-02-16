@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>世界一かっこいいホームページ</title>
+  <style>
+    /* ===============================
+       リセット & 基本設定 
+       =============================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    html, body { height: 100%; }
+    body { overflow-x: hidden; background: transparent; }
+
+    /* ===============================
+       Google Fonts 
+       =============================== */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    body { font-family: 'Roboto', sans-serif; color: #fff; }
+
+    /* ===============================
+       Particle Canvas (背景パーティクル)
+       =============================== */
+    #particleCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    /* ===============================
+       ヘッダー
+       =============================== */
+    .header {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      z-index: 100;
+      animation: headerFadeIn 1s ease-out;
+    }
+    @keyframes headerFadeIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin-right: 20px;
+      animation: logoSpin 4s linear infinite;
+    }
+    @keyframes logoSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #ff00ff, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: titlePulse 2s infinite;
+    }
+    @keyframes titlePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .menu {
+      margin-left: auto;
+      display: flex;
+      gap: 25px;
+    }
+    .menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+    .menu a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+
+    /* ===============================
+       メインコンテンツ
+       =============================== */
+    main {
+      width: 90%;
+      max-width: 1200px;
+      margin: 100px auto;
+      padding: 20px;
+    }
+    section {
+      margin: 60px 0;
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      animation: sectionEnter 1s ease-out forwards;
+      opacity: 0;
+    }
+    @keyframes sectionEnter {
+      from { opacity: 0; transform: translateY(50px) rotateX(10deg); }
+      to { opacity: 1; transform: translateY(0) rotateX(0deg); }
+    }
+    section::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent);
+      transform: rotate(45deg);
+      animation: bgRotate 20s linear infinite;
+    }
+    @keyframes bgRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+    }
+    section p {
+      font-size: 1.3rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 10px;
+      background: linear-gradient(45deg, #ff00ff, #00ffff);
+      text-decoration: none;
+      color: #000;
+      box-shadow: 0 0 15px #ff00ff;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px #00ffff;
+    }
+
+    /* ===============================
+       商品グリッド
+       =============================== */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    .product-item {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+    .product-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #00ffff;
+    }
+    .product-name {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      color: #00ffff;
+      text-shadow: 0 0 5px #ff00ff;
+    }
+    .product-price {
+      font-size: 1.3rem;
+      color: #fff;
+    }
+
+    /* ===============================
+       お問い合わせフォーム
+       =============================== */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .contact-form label {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      padding: 15px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+    }
+    .contact-form input { height: 45px; }
+    .contact-form textarea { resize: vertical; min-height: 120px; }
+    .contact-form .submit-btn {
+      background: linear-gradient(45deg, #ff00ff, #00ffff);
+      color: #000;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .contact-form .submit-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px #ff00ff;
+    }
+
+    /* ===============================
+       レスポンシブ調整
+       =============================== */
+    @media (max-width: 768px) {
+      .title { font-size: 2rem; }
+      .menu a { font-size: 1rem; }
+      section { padding: 30px; }
+      section h2 { font-size: 2rem; }
+      section p { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- パーティクル背景 -->
+  <canvas id="particleCanvas"></canvas>
+  <!-- ヘッダー -->
+  <header class="header">
+    <img src="images/samm.webp" alt="お店のロゴ" class="logo">
+    <div class="title">s.k onrsain shop</div>
+    <nav class="menu">
+      <a href="#home">ホーム</a>
+      <a href="#products">商品</a>
+      <a href="#membership">会員情報</a>
+      <a href="#contact">お問い合わせ</a>
+      
+    </nav>
+  </header>
+  <!-- メインコンテンツ -->
+  <main>
+    <!-- ホームセクション -->
+    <section id="home">
+      <h2>ホーム</h2>
+      <p>あなたの想像を超える、驚愕のビジュアルと体験をお届けします。ここで、世界一かっこいい瞬間を感じてください。</p>
+      <a href="#products" class="button">商品を見る</a>
+    </section>
+    <!-- 商品セクション -->
+    <section id="products">
+      <h2>商品</h2>
+      <p>最高級のアイテムがあなたを待っています。まるで芸術品のような逸品を、ここでご覧ください。</p>
+      <div class="product-grid">
+        <div class="product-item">
+          <span class="product-name">プレミアムコーヒー</span>
+          <span class="product-price">￥1,200</span>
+        </div>
+        <div class="product-item">
+          <span class="product-name">オーガニック紅茶</span>
+          <span class="product-price">￥900</span>
+        </div>
+        <div class="product-item">
+          <span class="product-name">クラシックチョコレート</span>
+          <span class="product-price">￥1,500</span>
+        </div>
+      </div>
+    </section>
+    <!-- 会員情報セクション -->
+    <section id="membership">
+      <h2>会員情報</h2>
+      <p>会員になると、あなたは特別な世界の扉を開き、VIP限定の特典と衝撃のサービスを体験できます。</p>
+      <a href="membership.html" class="button">今すぐ登録</a>
+      <div class="location" id="location"></div>      
+    </section>
+    <!-- お問い合わせセクション -->
+    <section id="contact">
+      <h2>お問い合わせ</h2>
+      <p>ご質問やご要望がございましたら、下記フォームからどうぞ。あなたの声に、世界が応えます。</p>
+      <form class="contact-form">
+        <label for="name">お名前</label>
+        <input type="text" id="name" name="name" placeholder="お名前を入力" required>
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" name="email" placeholder="メールアドレスを入力" required>
+        <label for="message">メッセージ</label>
+        <textarea id="message" name="message" placeholder="ご用件を入力" required></textarea>
+        <button type="submit" class="submit-btn">送信</button>
+      </form>
+    </section>
+  </main>
+  <script>
+    /* ===============================
+       Particle Animation Script
+       =============================== */
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    let particlesArray = [];
+    const numberOfParticles = Math.floor(window.innerWidth / 10);
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+        this.color = 'rgba(255,255,255,0.8)';
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
+        if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+    
+    function initParticles() {
+      particlesArray = [];
+      for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new Particle());
+      }
+    }
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let particle of particlesArray) {
+        particle.update();
+        particle.draw();
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    
+    initParticles();
+    animateParticles();
+    
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initParticles();
+    });
+    
+    /* ===============================
+       Geolocation (会員情報に現在地表示)
+       =============================== */
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        document.getElementById('location').textContent = `現在地: 緯度 ${lat.toFixed(4)}, 経度 ${lon.toFixed(4)}`;
+      }, function() {
+        document.getElementById('location').textContent = '現在地情報を取得できませんでした。';
+      });
+    } else {
+      document.getElementById('location').textContent = 'お使いのブラウザは現在地情報に対応していません。';
+    }
+  </script>
+</body>
+</html>
+
